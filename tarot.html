@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Tarot</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    body {
+      background: #111;
+      color: white;
+      text-align: center;
+      font-family: sans-serif;
+    }
+    .card {
+      display: inline-block;
+      width: 80px;
+      height: 120px;
+      margin: 10px;
+      background: #333;
+      border-radius: 8px;
+      line-height: 120px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .selected {
+      background: gold;
+      color: black;
+    }
+  </style>
+</head>
+<body>
+
+<h2>Выбери 3 карты</h2>
+<div id="cards"></div>
+<br>
+<button onclick="send()">Готово</button>
+
+<script>
+const tg = window.Telegram.WebApp;
+tg.expand();
+
+const deck = ["Шут", "Маг", "Солнце", "Смерть", "Императрица", "Император"];
+let selected = [];
+
+const container = document.getElementById("cards");
+
+deck.forEach(card => {
+  const div = document.createElement("div");
+  div.className = "card";
+  div.innerText = "🂠";
+  div.onclick = () => {
+    if (selected.includes(card) || selected.length >= 3) return;
+    selected.push(card);
+    div.innerText = card;
+    div.classList.add("selected");
+  };
+  container.appendChild(div);
+});
+
+function send() {
+  if (selected.length !== 3) {
+    alert("Выбери ровно 3 карты");
+    return;
+  }
+  tg.sendData(selected.join(","));
+  tg.close();
+}
+</script>
+
+</body>
+</html>
